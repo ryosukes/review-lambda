@@ -14,7 +14,7 @@ package:
    - ./bin/**
 
 functions:
-  hello:
+  review-ojisan:
     handler: bin/review-ojisan
     events:
       - http:
