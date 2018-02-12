@@ -1,4 +1,5 @@
 config/config.toml
+serverless.yml
 
 # Serverless directories
 .serverless
