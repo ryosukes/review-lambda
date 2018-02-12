@@ -1,0 +1,22 @@
+service: review-ojisan
+
+provider:
+  name: aws
+  runtime: go1.x
+  stage: dev
+  region: ap-northeast-1
+  memorySize: 128
+
+package:
+ exclude:
+   - ./**
+ include:
+   - ./bin/**
+
+functions:
+  review-ojisan:
+    handler: bin/review-ojisan
+    events:
+      - http:
+          path: review-ojisan
+          method: post
