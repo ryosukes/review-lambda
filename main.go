@@ -7,7 +7,7 @@ import (
 	"os"
 	"time"
 
-	slack "codereview-lambda/slack"
+	slack "review-ojisan/slack"
 
 	"github.com/BurntSushi/toml"
 	"github.com/aws/aws-lambda-go/lambda"
@@ -27,7 +27,7 @@ type ReviewerConfig struct {
 
 // SlackConfig from config.toml
 type SlackConfig struct {
-	Url      string
+	URL      string
 	UserName string
 	Channel  string
 	Group    string
@@ -43,7 +43,7 @@ func HandleRequest(ctx context.Context) (string, error) {
 	prURL := fmt.Sprintf("%s", os.Args[1:])
 	message := generateMessage(reviewer, prURL)
 
-	sl := slack.NewSlack(config.Slack.Url, message, config.Slack.UserName, ":eyes:", "", config.Slack.Channel)
+	sl := slack.NewSlack(config.Slack.URL, message, config.Slack.UserName, ":eyes:", "", config.Slack.Channel)
 
 	sl.Send()
 
