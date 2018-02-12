@@ -2,6 +2,12 @@
 
 
 [[projects]]
+  name = "github.com/BurntSushi/toml"
+  packages = ["."]
+  revision = "b26d9c308763d68093482582cea63d69be07a0f0"
+  version = "v0.3.0"
+
+[[projects]]
   name = "github.com/aws/aws-lambda-go"
   packages = [
     "events",
@@ -15,6 +21,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "3375957ebac467c0b60004a3901209363670a2ee730d5474c3d1ad1b121325bd"
+  inputs-digest = "d42e70e20928bd63d489f9d0c3aca79e06490b0a36c35c08df54d625aea534f3"
   solver-name = "gps-cdcl"
   solver-version = 1
