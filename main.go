@@ -1,8 +1,10 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"math/rand"
+	"os"
 	"time"
 
 	slack "review-ojisan/slack"
@@ -10,6 +12,10 @@ import (
 	"github.com/BurntSushi/toml"
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/endpoints"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/s3"
 )
 
 // Config from config directory
@@ -54,8 +60,23 @@ func main() {
 }
 
 func loadConfig() {
-	var file = "./config/config.toml"
-	_, err := toml.DecodeFile(file, &config)
+	var BUCKET = os.Getenv("BUCKET")
+	var KEY = os.Getenv("KEY")
+
+	svc := s3.New(session.New(), &aws.Config{
+		Region: aws.String(endpoints.ApNortheast1RegionID),
+	})
+
+	file, _ := svc.GetObject(&s3.GetObjectInput{
+		Bucket: aws.String(BUCKET),
+		Key:    aws.String(KEY),
+	})
+
+	brb := new(bytes.Buffer) // buffer Response Body
+	brb.ReadFrom(file.Body)
+	srb := brb.String()
+
+	_, err := toml.DecodeFile(srb, &config)
 
 	if err != nil {
 		panic(err)
