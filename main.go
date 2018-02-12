@@ -4,7 +4,9 @@ import (
 	"bytes"
 	"fmt"
 	"math/rand"
+	"net/url"
 	"os"
+	"strings"
 	"time"
 
 	slack "review-ojisan/slack"
@@ -45,10 +47,13 @@ func HandleRequest(request events.APIGatewayProxyRequest) (events.APIGatewayProx
 	loadConfig()
 
 	reviewer := selectReviewer()
-	prURL := fmt.Sprintf("%s", request.Body)
+
+	u, _ := url.Parse("https://dummy.com/?" + request.Body)
+	query := u.Query()
+	prURL := fmt.Sprintf("%s", query["text"])
 	message := generateMessage(reviewer, prURL)
 
-	sl := slack.NewSlack(config.Slack.URL, message, config.Slack.UserName, ":eyes:", "", config.Slack.Channel)
+	sl := slack.NewSlack(config.Slack.URL, message, config.Slack.UserName, "", "http://3.bp.blogspot.com/-0SY0brETIYs/VaMNiZlDbUI/AAAAAAAAvZQ/hrfERj3OB4A/s800/man_49.png", config.Slack.Channel)
 
 	sl.Send()
 
@@ -93,5 +98,6 @@ func selectReviewer() ReviewerConfig {
 }
 
 func generateMessage(reviewer ReviewerConfig, prURL string) string {
-	return config.Slack.Group + " " + reviewer.SlackAccount + " " + reviewer.Name + "さん、コードレビューをお願いします！ " + prURL
+	r := strings.NewReplacer("[", "", "]", "")
+	return config.Slack.Group + " " + reviewer.SlackAccount + " " + reviewer.Name + "さん、コードレビューをお願いします！ " + r.Replace(prURL)
 }
