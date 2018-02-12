@@ -1,4 +1,4 @@
-service: myservice
+service: review-ojisan
 
 provider:
   name: aws
@@ -12,8 +12,8 @@ package:
 
 functions:
   hello:
-    handler: bin/hello
+    handler: bin/review-ojisan
     events:
       - http:
-          path: hello
+          path: review-ojisan
           method: post
