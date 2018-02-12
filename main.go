@@ -72,11 +72,12 @@ func loadConfig() {
 		Key:    aws.String(KEY),
 	})
 
-	brb := new(bytes.Buffer) // buffer Response Body
-	brb.ReadFrom(file.Body)
-	srb := brb.String()
+	defer file.Body.Close()
 
-	_, err := toml.DecodeFile(srb, &config)
+	brb := new(bytes.Buffer)
+	brb.ReadFrom(file.Body)
+
+	_, err := toml.DecodeReader(brb, &config)
 
 	if err != nil {
 		panic(err)
