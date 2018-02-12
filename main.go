@@ -1,15 +1,14 @@
 package main
 
 import (
-	"context"
 	"fmt"
 	"math/rand"
-	"os"
 	"time"
 
 	slack "review-ojisan/slack"
 
 	"github.com/BurntSushi/toml"
+	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 )
 
@@ -36,18 +35,18 @@ type SlackConfig struct {
 var config Config
 
 // HandleRequest is Lambda Handler
-func HandleRequest(ctx context.Context) (string, error) {
+func HandleRequest(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	loadConfig()
 
 	reviewer := selectReviewer()
-	prURL := fmt.Sprintf("%s", os.Args[1:])
+	prURL := fmt.Sprintf("%s", request.Body)
 	message := generateMessage(reviewer, prURL)
 
 	sl := slack.NewSlack(config.Slack.URL, message, config.Slack.UserName, ":eyes:", "", config.Slack.Channel)
 
 	sl.Send()
 
-	return "", nil
+	return events.APIGatewayProxyResponse{Body: request.Body, StatusCode: 200}, nil
 }
 
 func main() {
